@@ -1,0 +1,3 @@
+#Simple Server Java (Project StealthForge)
+
+Projeto para desenvolvimento de uma API em Java utilizando somente lib padrões do Java 21 e entender melhor o funcionamento de ferramentas como Spring Web, Lombok, Jakson/Gson, etc...

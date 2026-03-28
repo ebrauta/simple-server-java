@@ -2,6 +2,8 @@ package github.ebrauta;
 
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
+import github.ebrauta.repository.ProductRepository;
+import github.ebrauta.service.ProductService;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,14 +18,21 @@ public class Main {
             exchange.getResponseBody().write(response.getBytes());
             exchange.close();
         });
-        server.createContext("/products", new ProductController());
+        createProductContext(server);
         server.start();
         System.out.println("Servidor rodando na porta " + port);
     }
 
-    private static int getPort(){
+    private static void createProductContext(HttpServer server) {
+        ProductRepository repository = new ProductRepository();
+        ProductService service = new ProductService(repository);
+        ProductController controller = new ProductController(service);
+        server.createContext("/products", controller);
+    }
+
+    private static int getPort() {
         String envPort = System.getenv("PORT");
-        if(envPort != null){
+        if (envPort != null) {
             return Integer.parseInt(envPort);
         }
         return 8080;

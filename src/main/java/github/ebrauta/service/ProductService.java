@@ -11,7 +11,7 @@ public class ProductService {
         this.repository = repository;
     }
     public List<Product> getAllProducts() {
-        return repository.findAll();
+        return repository.findAllActive();
     }
     public Product createProduct(Product product) {
         return repository.save(product);
@@ -19,4 +19,5 @@ public class ProductService {
     public Product getProductById(Long id){
         return repository.findById(id);
     }
+    public Product deleteProduct(Long id){return repository.remove(id);}
 }

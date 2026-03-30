@@ -13,6 +13,9 @@ public class ProductRepository {
     public List<Product> findAll() {
         return products;
     }
+    public List<Product> findAllActive(){
+        return products.stream().filter(Product::active).toList();
+    }
     public Product save(Product product) {
         Long id = idGenerator.getAndIncrement();
         Product newProduct = new Product(id, product.name(), product.price(), product.active());
@@ -25,5 +28,21 @@ public class ProductRepository {
                 .filter(p -> p.id().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+    public Product remove(Long id){
+        for(int i = 0; i < products.size(); i++){
+            Product p = products.get(i);
+            if(p.id().equals(id)){
+                Product updated = new Product(
+                        p.id(),
+                        p.name(),
+                        p.price(),
+                        false
+                );
+                products.set(i, updated);
+                return updated;
+            }
+        }
+        return null;
     }
 }

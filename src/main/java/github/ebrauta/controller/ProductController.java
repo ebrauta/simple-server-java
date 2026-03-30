@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import github.ebrauta.model.Product;
 import github.ebrauta.service.ProductService;
+import github.ebrauta.util.JsonUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,24 +40,19 @@ public class ProductController implements HttpHandler {
 
     private void handleGet(HttpExchange exchange) throws IOException {
         List<Product> products = service.getAllProducts();
-        String response = products.toString();
+        String response = JsonUtil.toJson(products);
         sendResponse(exchange, 200, response);
     }
     private void handlePost(HttpExchange exchange) throws IOException {
         String body = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).lines().collect(Collectors.joining());
-        Product product = parseProduct(body);
+        Product product = JsonUtil.fromJson(body);
         Product created = service.createProduct(product);
-        sendResponse(exchange, 201, created.toString());
+        String response = JsonUtil.toJson(created);
+        sendResponse(exchange, 201, response);
     }
-    private Product parseProduct(String body){
-        // Ex: {"name":"Mouse","price":50.0}
-        String cleanBody = body.substring(1,body.length()-1).replace("\"","");
-        String name = cleanBody.split("name:")[1].split(",")[0].trim();
-        String priceStr = cleanBody.split("price:")[1].split(",")[0].trim();
-        double price = Double.parseDouble(priceStr);
-        return new Product(null, name, price, true);
-    }
+
     private void sendResponse(HttpExchange exchange, int status, String response) throws IOException {
+        exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(status, response.length());
         writeResponse(exchange, response);
     }

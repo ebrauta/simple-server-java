@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import github.ebrauta.model.Product;
 import github.ebrauta.service.ProductService;
+import github.ebrauta.util.CorsUtil;
 import github.ebrauta.util.JsonUtil;
 
 import java.io.BufferedReader;
@@ -22,8 +23,11 @@ public class ProductController implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        CorsUtil.addCorsHeaders(exchange);
         String method = exchange.getRequestMethod();
-        if ("GET".equals(method)) {
+        if ("OPTIONS".equals(exchange.getRequestMethod())) {
+          handleOption(exchange);
+        } else if ("GET".equals(method)) {
             handleGet(exchange);
         } else if("POST".equals(method)) {
             handlePost(exchange);
@@ -36,6 +40,10 @@ public class ProductController implements HttpHandler {
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
+    }
+    private void handleOption(HttpExchange exchange) throws IOException{
+        exchange.sendResponseHeaders(204, -1);
+        return;
     }
 
     private void handleGet(HttpExchange exchange) throws IOException {
@@ -52,6 +60,7 @@ public class ProductController implements HttpHandler {
     }
 
     private void sendResponse(HttpExchange exchange, int status, String response) throws IOException {
+        CorsUtil.addCorsHeaders(exchange);
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(status, response.length());
         writeResponse(exchange, response);

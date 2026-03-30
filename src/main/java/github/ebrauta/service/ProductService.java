@@ -16,8 +16,7 @@ public class ProductService {
     public Product createProduct(Product product) {
         return repository.save(product);
     }
-    public Product getProductById(Long id){
-        return repository.findById(id);
-    }
+    public Product getProductById(Long id){return repository.findById(id);}
     public Product deleteProduct(Long id){return repository.remove(id);}
+    public Product updateProduct(Long id, Product product){return repository.update(id, product);}
 }

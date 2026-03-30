@@ -80,6 +80,8 @@ public class ProductController implements HttpHandler {
             handleGetItem(exchange, id);
         } else if("DELETE".equals(method)) {
             handleDeleteItem(exchange, id);
+        } else if("PUT".equals(method)){
+            handleUpdateItem(exchange, id);
         } else {
             sendResponse(exchange, 405, errorJson("Método Não Permitido"));
         }
@@ -99,6 +101,16 @@ public class ProductController implements HttpHandler {
             return;
         }
         sendResponse(exchange, 200, JsonUtil.toJson(deleted));
+    }
+    private void handleUpdateItem(HttpExchange exchange, Long id) throws IOException {
+        String body = readBody(exchange);
+        Product product = JsonUtil.fromJson(body);
+        Product updated = service.updateProduct(id, product);
+        if(updated == null){
+            sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
+            return;
+        }
+        sendResponse(exchange, 200, JsonUtil.toJson(updated));
     }
     private void sendResponse(HttpExchange exchange, int status, String response) throws IOException {
         CorsUtil.addCorsHeaders(exchange);

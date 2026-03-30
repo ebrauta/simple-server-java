@@ -45,4 +45,15 @@ public class ProductRepository {
         }
         return null;
     }
+    public Product update(Long id, Product product){
+        for(int i = 0; i < products.size(); i++){
+            Product existing = products.get(i);
+            if(existing.id().equals(id)){
+                Product updated = new Product(id, product.name(), product.price(), product.active());
+                products.set(i, updated);
+                return updated;
+            }
+        }
+        return null;
+    }
 }

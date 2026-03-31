@@ -11,7 +11,7 @@ public class ProductRepository {
     private final List<Product> products = new ArrayList<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
 
-    public List<Product> findAll() {
+    private List<Product> findAll() {
         return products;
     }
     public List<Product> findAllActive(){
@@ -26,7 +26,7 @@ public class ProductRepository {
     public Product findById(Long id){
         return products
                 .stream()
-                .filter(p -> p.id().equals(id))
+                .filter(p -> p.id().equals(id) && p.active())
                 .findFirst()
                 .orElse(null);
     }

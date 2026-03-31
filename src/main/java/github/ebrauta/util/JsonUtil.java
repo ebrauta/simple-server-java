@@ -1,12 +1,13 @@
 package github.ebrauta.util;
 
 import github.ebrauta.model.Product;
+import github.ebrauta.model.ProductPatch;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class JsonUtil {
-    public static String toJson(Product product){
+    public static String toJson(Product product) {
         return "{"
                 + "\"id\":" + product.id() + ","
                 + "\"name\":\"" + product.name() + "\","
@@ -14,28 +15,46 @@ public class JsonUtil {
                 + "\"active\":" + product.active() +
                 "}";
     }
-    public static String toJson(List<Product> products){
+
+    public static String toJson(List<Product> products) {
         return products
                 .stream()
                 .map(JsonUtil::toJson)
-                .collect(Collectors.joining(",","[","]"));
+                .collect(Collectors.joining(",", "[", "]"));
     }
 
-    public static Product fromJson(String json){
-        String cleaned = json.replace("{","").replace("}","").replace("\"","");
+    public static Product fromJson(String json) {
+        String cleaned = json.replace("{", "").replace("}", "").replace("\"", "");
         String[] fields = cleaned.split(",");
         String name = null;
         double price = 0;
-        for(String field: fields){
+        for (String field : fields) {
             String[] keyValue = field.split(":");
             String key = keyValue[0].trim();
             String value = keyValue[1].trim();
-            if("name".equals(key)){
+            if ("name".equals(key)) {
                 name = value;
-            } else if("price".equals(key)){
+            } else if ("price".equals(key)) {
                 price = Double.parseDouble(value);
             }
         }
         return new Product(null, name, price, true);
+    }
+
+    public static ProductPatch fromJsonPatch(String json) {
+        ProductPatch patch = new ProductPatch();
+        String cleaned = json.replace("{", "").replace("}", "").replace("\"", "");
+        String[] fields = cleaned.split(",");
+        for (String field : fields) {
+            String[] keyValue = field.split(":");
+            String key = keyValue[0].trim();
+            String value = keyValue[1].trim();
+            switch (key) {
+                case "name" -> patch.setName(value);
+                case "price" -> patch.setPrice(Double.parseDouble(value));
+                case "active" -> patch.setActive(Boolean.parseBoolean(value));
+            }
+        }
+        return patch;
     }
 }

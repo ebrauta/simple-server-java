@@ -3,6 +3,7 @@ package github.ebrauta.controller;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import github.ebrauta.model.Product;
+import github.ebrauta.model.ProductPatch;
 import github.ebrauta.service.ProductService;
 import github.ebrauta.util.CorsUtil;
 import github.ebrauta.util.JsonUtil;
@@ -82,6 +83,8 @@ public class ProductController implements HttpHandler {
             handleDeleteItem(exchange, id);
         } else if("PUT".equals(method)){
             handleUpdateItem(exchange, id);
+        } else if("PATCH".equals(method)) {
+            handlePatchItem(exchange, id);
         } else {
             sendResponse(exchange, 405, errorJson("Método Não Permitido"));
         }
@@ -106,6 +109,16 @@ public class ProductController implements HttpHandler {
         String body = readBody(exchange);
         Product product = JsonUtil.fromJson(body);
         Product updated = service.updateProduct(id, product);
+        if(updated == null){
+            sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
+            return;
+        }
+        sendResponse(exchange, 200, JsonUtil.toJson(updated));
+    }
+    private void handlePatchItem(HttpExchange exchange, Long id) throws IOException {
+        String body = readBody(exchange);
+        ProductPatch patch = JsonUtil.fromJsonPatch(body);
+        Product updated = service.patchProduct(id, patch);
         if(updated == null){
             sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
             return;

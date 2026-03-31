@@ -3,6 +3,7 @@ package github.ebrauta.service;
 import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;
 import github.ebrauta.repository.ProductRepository;
+import github.ebrauta.validator.ProductValidator;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
+        ProductValidator.validate(product);
         return repository.save(product);
     }
 
@@ -30,10 +32,12 @@ public class ProductService {
     }
 
     public Product updateProduct(Long id, Product product) {
+        ProductValidator.validate(product);
         return repository.update(id, product);
     }
 
     public Product patchProduct(Long id, ProductPatch patch) {
+        ProductValidator.validatePatch(patch);
         return repository.patch(id, patch);
     }
 }

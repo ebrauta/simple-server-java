@@ -2,6 +2,7 @@ package github.ebrauta.controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import github.ebrauta.exception.ValidationException;
 import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;
 import github.ebrauta.service.ProductService;
@@ -26,31 +27,37 @@ public class ProductController implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        if ("OPTIONS".equals(exchange.getRequestMethod())) {
-            CorsUtil.addCorsHeaders(exchange);
-            exchange.sendResponseHeaders(204, -1);
-            return;
-        }
-        String method = exchange.getRequestMethod();
-        String path = exchange.getRequestURI().getPath();
-        String[] pathParts = path.split("/");
-
-        boolean isCollection = pathParts.length == 2;
-        boolean isItem = pathParts.length == 3;
-
-        if (isCollection) {
-            handleCollection(exchange, method);
-        } else if (isItem) {
-            long id;
-            try {
-                id = Long.parseLong(pathParts[2]);
-            } catch (NumberFormatException e) {
-                sendResponse(exchange, 400, ResponseUtil.error("ID Inválido"));
+        try {
+            if ("OPTIONS".equals(exchange.getRequestMethod())) {
+                CorsUtil.addCorsHeaders(exchange);
+                exchange.sendResponseHeaders(204, -1);
                 return;
             }
-            handleItem(exchange, method, id);
-        } else {
-            sendResponse(exchange, 404, ResponseUtil.error("Endpoint Não Encontrado"));
+            String method = exchange.getRequestMethod();
+            String path = exchange.getRequestURI().getPath();
+            String[] pathParts = path.split("/");
+
+            boolean isCollection = pathParts.length == 2;
+            boolean isItem = pathParts.length == 3;
+
+            if (isCollection) {
+                handleCollection(exchange, method);
+            } else if (isItem) {
+                long id;
+                try {
+                    id = Long.parseLong(pathParts[2]);
+                } catch (NumberFormatException e) {
+                    sendResponse(exchange, 400, ResponseUtil.error("ID Inválido"));
+                    return;
+                }
+                handleItem(exchange, method, id);
+            } else {
+                sendResponse(exchange, 404, ResponseUtil.error("Endpoint Não Encontrado"));
+            }
+        } catch (ValidationException e) {
+            sendResponse(exchange, 400, ResponseUtil.error(e.getMessage()));
+        } catch (Exception e) {
+            sendResponse(exchange, 500, ResponseUtil.error(e.getMessage()));
         }
 
     }

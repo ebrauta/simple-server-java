@@ -2,6 +2,7 @@ package github.ebrauta;
 
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
+import github.ebrauta.middleware.ExceptionMiddleware;
 import github.ebrauta.middleware.LoggingMiddleware;
 import github.ebrauta.middleware.Middleware;
 import github.ebrauta.middleware.MiddlewareChain;
@@ -32,9 +33,14 @@ public class Main {
         ProductRepository repository = new ProductRepository();
         ProductService service = new ProductService(repository);
         ProductController controller = new ProductController(service);
-        List<Middleware> middlewares = List.of(new LoggingMiddleware());
-        MiddlewareChain chain = new MiddlewareChain(middlewares, controller::handle);
-        server.createContext("/products", chain::next);
+        List<Middleware> middlewares = List.of(
+                new ExceptionMiddleware(),
+                new LoggingMiddleware()
+        );
+        server.createContext("/products", exchange -> {
+            MiddlewareChain chain = new MiddlewareChain(middlewares, controller::handle);
+            chain.next(exchange);
+        });
     }
 
     private static int getPort() {

@@ -31,9 +31,19 @@ public class JsonUtil {
             String[] keyValue = field.split(":");
             String key = keyValue[0].trim();
             String value = keyValue[1].trim();
-            switch (key){
-                case "name" -> dto.setName(value);
-                case "price" -> dto.setPrice(Double.parseDouble(value));
+            switch (key) {
+                case "name" -> {
+                    if ("null".equals(value)) {
+                        dto.setName(null);
+                    } else {
+                        dto.setName(value);
+                    }
+                }
+                case "price" -> {
+                    if (!"null".equals(value)) {
+                        dto.setPrice(Double.parseDouble(value));
+                    }
+                }
             }
         }
         return dto;
@@ -48,9 +58,23 @@ public class JsonUtil {
             String key = keyValue[0].trim();
             String value = keyValue[1].trim();
             switch (key) {
-                case "name" -> patch.setName(value);
-                case "price" -> patch.setPrice(Double.parseDouble(value));
-                case "active" -> patch.setActive(Boolean.parseBoolean(value));
+                case "name" -> {
+                    if ("null".equals(value)) {
+                        patch.setName(null);
+                    } else {
+                        patch.setName(value);
+                    }
+                }
+                case "price" -> {
+                    if (!"null".equals(value)) {
+                        patch.setPrice(Double.parseDouble(value));
+                    }
+                }
+                case "active" -> {
+                    if (!"null".equals(value)) {
+                        patch.setActive(Boolean.parseBoolean(value));
+                    }
+                }
             }
         }
         return patch;

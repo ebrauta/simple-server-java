@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import github.ebrauta.dto.ProductRequestDTO;
 import github.ebrauta.dto.ProductResponseDTO;
-import github.ebrauta.exception.ValidationException;
 import github.ebrauta.mapper.ProductMapper;
 import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;

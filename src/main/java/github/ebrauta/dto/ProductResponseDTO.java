@@ -1,9 +1,9 @@
 package github.ebrauta.dto;
 
 public class ProductResponseDTO {
-    private Long id;
-    private String name;
-    private Double price;
+    private final Long id;
+    private final String name;
+    private final Double price;
 
     public ProductResponseDTO(Long id, String name, Double price) {
         this.id = id;

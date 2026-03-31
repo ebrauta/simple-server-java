@@ -2,7 +2,6 @@ package github.ebrauta.util;
 
 import github.ebrauta.dto.ProductRequestDTO;
 import github.ebrauta.dto.ProductResponseDTO;
-import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;
 
 import java.util.List;
@@ -28,8 +27,6 @@ public class JsonUtil {
         ProductRequestDTO dto = new ProductRequestDTO();
         String cleaned = json.replace("{", "").replace("}", "").replace("\"", "");
         String[] fields = cleaned.split(",");
-        String name = null;
-        double price = 0;
         for (String field : fields) {
             String[] keyValue = field.split(":");
             String key = keyValue[0].trim();

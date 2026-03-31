@@ -15,7 +15,7 @@ public class ProductRepository {
         return products;
     }
     public List<Product> findAllActive(){
-        return products.stream().filter(Product::active).toList();
+        return findAll().stream().filter(Product::active).toList();
     }
     public Product save(Product product) {
         Long id = idGenerator.getAndIncrement();

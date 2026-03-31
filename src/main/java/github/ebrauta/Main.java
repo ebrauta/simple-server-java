@@ -2,12 +2,16 @@ package github.ebrauta;
 
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
+import github.ebrauta.middleware.LoggingMiddleware;
+import github.ebrauta.middleware.Middleware;
+import github.ebrauta.middleware.MiddlewareChain;
 import github.ebrauta.repository.ProductRepository;
 import github.ebrauta.service.ProductService;
 import github.ebrauta.util.Banner;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -28,7 +32,9 @@ public class Main {
         ProductRepository repository = new ProductRepository();
         ProductService service = new ProductService(repository);
         ProductController controller = new ProductController(service);
-        server.createContext("/products", controller);
+        List<Middleware> middlewares = List.of(new LoggingMiddleware());
+        MiddlewareChain chain = new MiddlewareChain(middlewares, controller::handle);
+        server.createContext("/products", chain::next);
     }
 
     private static int getPort() {

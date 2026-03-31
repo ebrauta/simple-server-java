@@ -7,6 +7,7 @@ import github.ebrauta.model.ProductPatch;
 import github.ebrauta.service.ProductService;
 import github.ebrauta.util.CorsUtil;
 import github.ebrauta.util.JsonUtil;
+import github.ebrauta.util.ResponseUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,12 +45,12 @@ public class ProductController implements HttpHandler {
             try {
                 id = Long.parseLong(pathParts[2]);
             } catch (NumberFormatException e) {
-                sendResponse(exchange, 400, errorJson("ID Inválido"));
+                sendResponse(exchange, 400, ResponseUtil.error("ID Inválido"));
                 return;
             }
             handleItem(exchange, method, id);
         } else {
-            sendResponse(exchange, 404, errorJson("Endpoint Não Encontrado"));
+            sendResponse(exchange, 404, ResponseUtil.error("Endpoint Não Encontrado"));
         }
 
     }
@@ -60,25 +61,25 @@ public class ProductController implements HttpHandler {
         } else if ("POST".equals(method)) {
             handleCreate(exchange);
         } else {
-            sendResponse(exchange, 405, errorJson("Método Não Permitido"));
+            sendResponse(exchange, 405, ResponseUtil.error("Método Não Permitido"));
         }
     }
 
     private void handleGetAll(HttpExchange exchange) throws IOException {
         List<Product> products = service.getAllProducts();
-        sendResponse(exchange, 200, JsonUtil.toJson(products));
+        sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJson(products)));
     }
 
     private void handleCreate(HttpExchange exchange) throws IOException {
         String body = readBody(exchange);
         Product product = JsonUtil.fromJson(body);
         Product created = service.createProduct(product);
-        sendResponse(exchange, 201, JsonUtil.toJson(created));
+        sendResponse(exchange, 201, ResponseUtil.success(JsonUtil.toJson(created)));
     }
 
     private void handleItem(HttpExchange exchange, String method, Long id) throws IOException {
         if (method == null) {
-            sendResponse(exchange, 400, errorJson("Método Inválido"));
+            sendResponse(exchange, 400, ResponseUtil.error("Método Inválido"));
             return;
         }
         switch (method) {
@@ -86,26 +87,26 @@ public class ProductController implements HttpHandler {
             case "DELETE" -> handleDeleteItem(exchange, id);
             case "PUT" -> handleUpdateItem(exchange, id);
             case "PATCH" -> handlePatchItem(exchange, id);
-            default -> sendResponse(exchange, 405, errorJson("Método Não Permitido"));
+            default -> sendResponse(exchange, 405, ResponseUtil.error("Método Não Permitido"));
         }
     }
 
     private void handleGetItem(HttpExchange exchange, Long id) throws IOException {
         Product product = service.getProductById(id);
         if (product == null) {
-            sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
+            sendResponse(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
             return;
         }
-        sendResponse(exchange, 200, JsonUtil.toJson(product));
+        sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJson(product)));
     }
 
     private void handleDeleteItem(HttpExchange exchange, Long id) throws IOException {
         Product deleted = service.deleteProduct(id);
         if (deleted == null) {
-            sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
+            sendResponse(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
             return;
         }
-        sendResponse(exchange, 200, JsonUtil.toJson(deleted));
+        sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJson(deleted)));
     }
 
     private void handleUpdateItem(HttpExchange exchange, Long id) throws IOException {
@@ -113,10 +114,10 @@ public class ProductController implements HttpHandler {
         Product product = JsonUtil.fromJson(body);
         Product updated = service.updateProduct(id, product);
         if (updated == null) {
-            sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
+            sendResponse(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
             return;
         }
-        sendResponse(exchange, 200, JsonUtil.toJson(updated));
+        sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJson(updated)));
     }
 
     private void handlePatchItem(HttpExchange exchange, Long id) throws IOException {
@@ -124,10 +125,10 @@ public class ProductController implements HttpHandler {
         ProductPatch patch = JsonUtil.fromJsonPatch(body);
         Product updated = service.patchProduct(id, patch);
         if (updated == null) {
-            sendResponse(exchange, 404, errorJson("Produto Não Encontrado"));
+            sendResponse(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
             return;
         }
-        sendResponse(exchange, 200, JsonUtil.toJson(updated));
+        sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJson(updated)));
     }
 
     private void sendResponse(HttpExchange exchange, int status, String response) throws IOException {
@@ -138,10 +139,6 @@ public class ProductController implements HttpHandler {
         OutputStream os = exchange.getResponseBody();
         os.write(bytes);
         os.close();
-    }
-
-    private String errorJson(String message) {
-        return "{\"error\":\"" + message + "\"}";
     }
 
     private String readBody(HttpExchange exchange) {

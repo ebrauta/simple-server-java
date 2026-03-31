@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
 import github.ebrauta.repository.ProductRepository;
 import github.ebrauta.service.ProductService;
+import github.ebrauta.util.Banner;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,7 +21,7 @@ public class Main {
         });
         createProductContext(server);
         server.start();
-        System.out.println("Servidor rodando na porta " + port);
+        Banner.print(port);
     }
 
     private static void createProductContext(HttpServer server) {

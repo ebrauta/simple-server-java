@@ -2,12 +2,9 @@ package github.ebrauta.route;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import github.ebrauta.util.CorsUtil;
 import github.ebrauta.util.ResponseUtil;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 

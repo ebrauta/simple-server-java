@@ -1,7 +1,6 @@
 package github.ebrauta.controller;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import github.ebrauta.dto.ProductRequestDTO;
 import github.ebrauta.dto.ProductResponseDTO;
 import github.ebrauta.mapper.ProductMapper;

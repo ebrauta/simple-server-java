@@ -2,10 +2,7 @@ package github.ebrauta;
 
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
-import github.ebrauta.middleware.ExceptionMiddleware;
-import github.ebrauta.middleware.LoggingMiddleware;
-import github.ebrauta.middleware.Middleware;
-import github.ebrauta.middleware.MiddlewareChain;
+import github.ebrauta.middleware.*;
 import github.ebrauta.repository.ProductRepository;
 import github.ebrauta.route.Router;
 import github.ebrauta.service.ProductService;
@@ -35,15 +32,16 @@ public class Main {
         ProductRepository productRepository = new ProductRepository();
         ProductService productService = new ProductService(productRepository);
         ProductController productController = new ProductController(productService);
-        router.register("GET", "/products", productController::handleGetAll);
-        router.register("POST", "/products", productController::handleCreate);
-        router.register("GET", "/products/{id}", productController::handleGetItem);
-        router.register("DELETE", "/products/{id}", productController::handleDeleteItem);
-        router.register("PUT", "/products/{id}", productController::handleUpdateItem);
-        router.register("PATCH", "/products/{id}", productController::handlePatchItem);
+        router.register("GET", "/products", productController::getAll);
+        router.register("POST", "/products", productController::create);
+        router.register("GET", "/products/{id}", productController::getById);
+        router.register("DELETE", "/products/{id}", productController::delete);
+        router.register("PUT", "/products/{id}", productController::update);
+        router.register("PATCH", "/products/{id}", productController::patch);
         List<Middleware> middlewares = List.of(
                 new ExceptionMiddleware(),
-                new LoggingMiddleware()
+                new LoggingMiddleware(),
+                new CorsMiddleware()
         );
         server.createContext("/products", exchange -> {
             MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);

@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 public class JsonUtil {
     public static String toJsonFromDTO(ProductResponseDTO dto) {
         return "{"
-                + "\"id\":" + dto.getId() + ","
-                + "\"name\":\"" + dto.getName() + "\","
-                + "\"price\":" + dto.getPrice()
+                + "\"id\":" + dto.id() + ","
+                + "\"name\":\"" + dto.name() + "\","
+                + "\"price\":" + dto.price()
                 + "}";
     }
 

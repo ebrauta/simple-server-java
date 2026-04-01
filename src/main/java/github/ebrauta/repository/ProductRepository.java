@@ -31,7 +31,7 @@ public class ProductRepository {
                 .orElse(null);
     }
     public Product remove(Long id){
-        for(int i = 0; i < products.size(); i++){
+        /*for(int i = 0; i < products.size(); i++){
             Product p = products.get(i);
             if(p.id().equals(id) && p.active()){
                 Product updated = new Product(
@@ -43,22 +43,34 @@ public class ProductRepository {
                 products.set(i, updated);
                 return updated;
             }
+        }*/
+        Product found = findById(id);
+        if(found != null){
+            Product removed = new Product(id, found.name(), found.price(), false);
+            products.remove(found);
+            products.add(removed);
         }
         return null;
     }
     public Product update(Long id, Product product){
-        for(int i = 0; i < products.size(); i++){
+        /*for(int i = 0; i < products.size(); i++){
             Product existing = products.get(i);
             if(existing.id().equals(id)){
                 Product updated = new Product(id, product.name(), product.price(), product.active());
                 products.set(i, updated);
                 return updated;
             }
+        }*/
+        Product found = findById(id);
+        if(found != null){
+            Product updated = new Product(id, product.name(), product.price(), product.active());
+            products.remove(found);
+            products.add(updated);
         }
         return null;
     }
     public Product patch(Long id, ProductPatch patch){
-        for (int i = 0; i < products.size(); i++){
+        /*for (int i = 0; i < products.size(); i++){
             Product existing = products.get(i);
             if(existing.id().equals(id)){
                 Product updated = new Product(
@@ -70,6 +82,17 @@ public class ProductRepository {
                 products.set(i, updated);
                 return updated;
             }
+        }*/
+        Product found = findById(id);
+        if(found != null){
+            Product patched = new Product(
+                    id,
+                    patch.getName() != null ? patch.getName() : found.name(),
+                    patch.getPrice() != null ? patch.getPrice() : found.price(),
+                    patch.getActive() != null ? patch.getActive() : found.active()
+            );
+            products.remove(found);
+            products.add(patched);
         }
         return null;
     }

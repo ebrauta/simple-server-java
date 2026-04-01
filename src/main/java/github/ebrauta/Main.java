@@ -39,9 +39,9 @@ public class Main {
         router.register("PUT", "/products/{id}", productController::update);
         router.register("PATCH", "/products/{id}", productController::patch);
         List<Middleware> middlewares = List.of(
+                new CorsMiddleware(),
                 new ExceptionMiddleware(),
-                new LoggingMiddleware(),
-                new CorsMiddleware()
+                new LoggingMiddleware()
         );
         server.createContext("/products", exchange -> {
             MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);

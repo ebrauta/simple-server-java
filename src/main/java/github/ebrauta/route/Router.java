@@ -37,23 +37,10 @@ public class Router {
                         exchange.setAttribute("id", id);
                         route.handler.handle(exchange);
                         return;
-                    } catch (NumberFormatException e){
-                        continue;
-                    }
+                    } catch (NumberFormatException ignore){}
                 }
             }
         }
-        sendNotFound(exchange);
-    }
-
-    private void sendNotFound(HttpExchange exchange) throws IOException{
-        String response = ResponseUtil.error("Endpoint Não Encontrado");
-        CorsUtil.addCorsHeaders(exchange);
-        byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
-        exchange.sendResponseHeaders(404, bytes.length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(bytes);
-        os.close();
+        ResponseUtil.send(exchange, 404, ResponseUtil.error("EndPoint Não Encontrado"));
     }
 }

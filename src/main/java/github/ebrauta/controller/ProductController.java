@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProductController implements HttpHandler {
+public class ProductController implements ControllerHandler {
     private final ProductService service;
 
     public ProductController(ProductService service) {
@@ -32,69 +32,66 @@ public class ProductController implements HttpHandler {
     public void getAll(HttpExchange exchange) throws IOException {
         List<Product> products = service.getAllProducts();
         List<ProductResponseDTO> responseList = products.stream().map(ProductMapper::toResponse).toList();
-        ResponseUtil.send(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseList)));
+        String response = JsonUtil.toJsonFromDTO(responseList);
+        ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void create(HttpExchange exchange) throws IOException {
-        String body = readBody(exchange);
-        ProductRequestDTO dto = JsonUtil.fromJsonToDTO(body);
+        ProductRequestDTO dto = JsonUtil.fromJsonToDTO(readBody(exchange));
         Product product = ProductMapper.toEntity(dto);
         Product created = service.createProduct(product);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(created);
-        ResponseUtil.send(exchange, 201, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
+        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        ResponseUtil.send(exchange, 201, ResponseUtil.success(response));
     }
 
 
     public void getById(HttpExchange exchange) throws IOException {
-        Long id = (Long) exchange.getAttribute("id");
-        Product product = service.getProductById(id);
-        if (product == null) {
-            ResponseUtil.send(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
-            return;
-        }
+        Product product = service.getProductById(getId(exchange));
+        checkIfProductIsNull(exchange, product);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(product);
-        ResponseUtil.send(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
+        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void delete(HttpExchange exchange) throws IOException {
-        Long id = (Long) exchange.getAttribute("id");
-        Product deleted = service.deleteProduct(id);
-        if (deleted == null) {
-            ResponseUtil.send(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
-            return;
-        }
+        Product deleted = service.deleteProduct(getId(exchange));
+        checkIfProductIsNull(exchange, deleted);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(deleted);
-        ResponseUtil.send(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
+        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void update(HttpExchange exchange) throws IOException {
-        Long id = (Long) exchange.getAttribute("id");
-        String body = readBody(exchange);
-        ProductRequestDTO dto = JsonUtil.fromJsonToDTO(body);
+        ProductRequestDTO dto = JsonUtil.fromJsonToDTO(readBody(exchange));
         Product product = ProductMapper.toEntity(dto);
-        Product updated = service.updateProduct(id, product);
-        if (updated == null) {
-            ResponseUtil.send(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
-            return;
-        }
+        Product updated = service.updateProduct(getId(exchange), product);
+        checkIfProductIsNull(exchange, updated);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(updated);
-        ResponseUtil.send(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
+        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void patch(HttpExchange exchange) throws IOException {
-        Long id = (Long) exchange.getAttribute("id");
-        String body = readBody(exchange);
-        ProductPatch patch = JsonUtil.fromJsonPatch(body);
-        Product updated = service.patchProduct(id, patch);
-        if (updated == null) {
-            ResponseUtil.send(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
-            return;
-        }
+        ProductPatch patch = JsonUtil.fromJsonPatch(readBody(exchange));
+        Product updated = service.patchProduct(getId(exchange), patch);
+        checkIfProductIsNull(exchange, updated);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(updated);
-        ResponseUtil.send(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
+        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     private String readBody(HttpExchange exchange) {
         return new BufferedReader(new InputStreamReader(exchange.getRequestBody())).lines().collect(Collectors.joining());
+    }
+
+    private Long getId(HttpExchange exchange){
+        return (Long) exchange.getAttribute("id");
+    }
+
+    private void checkIfProductIsNull(HttpExchange exchange, Product product) throws IOException {
+        if (product == null) {
+            ResponseUtil.send(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
+        }
     }
 }

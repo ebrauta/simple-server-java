@@ -33,7 +33,7 @@ public class ProductRepository {
     public Product remove(Long id){
         for(int i = 0; i < products.size(); i++){
             Product p = products.get(i);
-            if(p.id().equals(id)){
+            if(p.id().equals(id) && p.active()){
                 Product updated = new Product(
                         p.id(),
                         p.name(),

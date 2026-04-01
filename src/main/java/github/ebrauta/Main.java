@@ -7,6 +7,7 @@ import github.ebrauta.middleware.LoggingMiddleware;
 import github.ebrauta.middleware.Middleware;
 import github.ebrauta.middleware.MiddlewareChain;
 import github.ebrauta.repository.ProductRepository;
+import github.ebrauta.route.Router;
 import github.ebrauta.service.ProductService;
 import github.ebrauta.util.Banner;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        Router router  = new Router();
         int port = getPort();
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/test", exchange -> {
@@ -24,21 +26,27 @@ public class Main {
             exchange.getResponseBody().write(response.getBytes());
             exchange.close();
         });
-        createProductContext(server);
+        createProductContext(server, router);
         server.start();
         Banner.print(port);
     }
 
-    private static void createProductContext(HttpServer server) {
-        ProductRepository repository = new ProductRepository();
-        ProductService service = new ProductService(repository);
-        ProductController controller = new ProductController(service);
+    private static void createProductContext(HttpServer server, Router router) {
+        ProductRepository productRepository = new ProductRepository();
+        ProductService productService = new ProductService(productRepository);
+        ProductController productController = new ProductController(productService);
+        router.register("GET", "/products", productController::handleGetAll);
+        router.register("POST", "/products", productController::handleCreate);
+        router.register("GET", "/products/{id}", productController::handleGetItem);
+        router.register("DELETE", "/products/{id}", productController::handleDeleteItem);
+        router.register("PUT", "/products/{id}", productController::handleUpdateItem);
+        router.register("PATCH", "/products/{id}", productController::handlePatchItem);
         List<Middleware> middlewares = List.of(
                 new ExceptionMiddleware(),
                 new LoggingMiddleware()
         );
         server.createContext("/products", exchange -> {
-            MiddlewareChain chain = new MiddlewareChain(middlewares, controller::handle);
+            MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
             chain.next(exchange);
         });
     }

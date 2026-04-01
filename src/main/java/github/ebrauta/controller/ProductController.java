@@ -44,38 +44,42 @@ public class ProductController implements HttpHandler {
         boolean isItem = pathParts.length == 3;
 
         if (isCollection) {
-            handleCollection(exchange, method);
+            //handleCollection(exchange, method);
+            return;
         } else if (isItem) {
-            long id;
+            /*long id;
             try {
                 id = Long.parseLong(pathParts[2]);
             } catch (NumberFormatException e) {
                 sendResponse(exchange, 400, ResponseUtil.error("ID Inválido"));
                 return;
             }
-            handleItem(exchange, method, id);
+            handleItem(exchange, method, id);*/
+            return;
         } else {
             sendResponse(exchange, 404, ResponseUtil.error("Endpoint Não Encontrado"));
         }
     }
 
     private void handleCollection(HttpExchange exchange, String method) throws IOException {
-        if ("GET".equals(method)) {
-            handleGetAll(exchange);
-        } else if ("POST".equals(method)) {
-            handleCreate(exchange);
-        } else {
-            sendResponse(exchange, 405, ResponseUtil.error("Método Não Permitido"));
+        /*if (method == null) {
+            sendResponse(exchange, 400, ResponseUtil.error("Método Inválido"));
+            return;
         }
+        switch (method) {
+            case "GET" -> handleGetAll(exchange);
+            case "POST" -> handleCreate(exchange);
+            default -> sendResponse(exchange, 405, ResponseUtil.error("Método Não Permitido"));
+        }*/
     }
 
-    private void handleGetAll(HttpExchange exchange) throws IOException {
+    public void handleGetAll(HttpExchange exchange) throws IOException {
         List<Product> products = service.getAllProducts();
         List<ProductResponseDTO> responseList = products.stream().map(ProductMapper::toResponse).toList();
         sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseList)));
     }
 
-    private void handleCreate(HttpExchange exchange) throws IOException {
+    public void handleCreate(HttpExchange exchange) throws IOException {
         String body = readBody(exchange);
         ProductRequestDTO dto = JsonUtil.fromJsonToDTO(body);
         Product product = ProductMapper.toEntity(dto);
@@ -85,7 +89,7 @@ public class ProductController implements HttpHandler {
     }
 
     private void handleItem(HttpExchange exchange, String method, Long id) throws IOException {
-        if (method == null) {
+        /*if (method == null) {
             sendResponse(exchange, 400, ResponseUtil.error("Método Inválido"));
             return;
         }
@@ -95,10 +99,11 @@ public class ProductController implements HttpHandler {
             case "PUT" -> handleUpdateItem(exchange, id);
             case "PATCH" -> handlePatchItem(exchange, id);
             default -> sendResponse(exchange, 405, ResponseUtil.error("Método Não Permitido"));
-        }
+        }*/
     }
 
-    private void handleGetItem(HttpExchange exchange, Long id) throws IOException {
+    public void handleGetItem(HttpExchange exchange) throws IOException {
+        Long id = (Long) exchange.getAttribute("id");
         Product product = service.getProductById(id);
         if (product == null) {
             sendResponse(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
@@ -108,7 +113,8 @@ public class ProductController implements HttpHandler {
         sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
     }
 
-    private void handleDeleteItem(HttpExchange exchange, Long id) throws IOException {
+    public void handleDeleteItem(HttpExchange exchange) throws IOException {
+        Long id = (Long) exchange.getAttribute("id");
         Product deleted = service.deleteProduct(id);
         if (deleted == null) {
             sendResponse(exchange, 404, ResponseUtil.error("Produto Não Encontrado"));
@@ -118,7 +124,8 @@ public class ProductController implements HttpHandler {
         sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
     }
 
-    private void handleUpdateItem(HttpExchange exchange, Long id) throws IOException {
+    public void handleUpdateItem(HttpExchange exchange) throws IOException {
+        Long id = (Long) exchange.getAttribute("id");
         String body = readBody(exchange);
         ProductRequestDTO dto = JsonUtil.fromJsonToDTO(body);
         Product product = ProductMapper.toEntity(dto);
@@ -131,7 +138,8 @@ public class ProductController implements HttpHandler {
         sendResponse(exchange, 200, ResponseUtil.success(JsonUtil.toJsonFromDTO(responseDTO)));
     }
 
-    private void handlePatchItem(HttpExchange exchange, Long id) throws IOException {
+    public void handlePatchItem(HttpExchange exchange) throws IOException {
+        Long id = (Long) exchange.getAttribute("id");
         String body = readBody(exchange);
         ProductPatch patch = JsonUtil.fromJsonPatch(body);
         Product updated = service.patchProduct(id, patch);

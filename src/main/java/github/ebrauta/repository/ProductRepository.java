@@ -2,14 +2,26 @@ package github.ebrauta.repository;
 
 import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;
+import github.ebrauta.util.FileUtil;
+import github.ebrauta.util.JsonUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ProductRepository {
-    private final List<Product> products = new ArrayList<>();
+    private final List<Product> products;
+    private final String FILE_PATH = "src/main/resources/data/products.json";
     private final AtomicLong idGenerator = new AtomicLong(1);
+
+    public ProductRepository() {
+        String json = FileUtil.read(FILE_PATH);
+        this.products = JsonUtil.toProductList(json);
+    }
+
+    private void persist(){
+        String json = JsonUtil.toJsonList(products, JsonUtil::toJson);
+        FileUtil.write(FILE_PATH, json);
+    }
 
     private List<Product> findAll() {
         return products;
@@ -21,6 +33,7 @@ public class ProductRepository {
         Long id = idGenerator.getAndIncrement();
         Product newProduct = new Product(id, product.name(), product.price(), product.active());
         products.add(newProduct);
+        persist();
         return newProduct;
     }
     public Product findById(Long id){
@@ -36,6 +49,7 @@ public class ProductRepository {
             Product removed = new Product(id, found.name(), found.price(), false);
             products.remove(found);
             products.add(removed);
+            persist();
             return removed;
         }
         return null;
@@ -46,6 +60,7 @@ public class ProductRepository {
             Product updated = new Product(id, product.name(), product.price(), product.active());
             products.remove(found);
             products.add(updated);
+            persist();
             return updated;
         }
         return null;
@@ -61,6 +76,7 @@ public class ProductRepository {
             );
             products.remove(found);
             products.add(patched);
+            persist();
             return patched;
         }
         return null;

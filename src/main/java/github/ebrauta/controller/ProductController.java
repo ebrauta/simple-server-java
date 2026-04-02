@@ -31,16 +31,16 @@ public class ProductController implements ControllerHandler {
     public void getAll(HttpExchange exchange) throws IOException {
         List<Product> products = service.getAllProducts();
         List<ProductResponseDTO> responseList = products.stream().map(ProductMapper::toResponse).toList();
-        String response = JsonUtil.toJsonFromDTO(responseList);
+        String response = JsonUtil.toJsonList(responseList, JsonUtil::toJson);
         ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void create(HttpExchange exchange) throws IOException {
-        ProductRequestDTO dto = JsonUtil.fromJsonToDTO(readBody(exchange));
+        ProductRequestDTO dto = JsonUtil.toRequestDTO(readBody(exchange));
         Product product = ProductMapper.toEntity(dto);
         Product created = service.createProduct(product);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(created);
-        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        String response = JsonUtil.toJson(responseDTO);
         ResponseUtil.send(exchange, 201, ResponseUtil.success(response));
     }
 
@@ -49,7 +49,7 @@ public class ProductController implements ControllerHandler {
         Product product = service.getProductById(getId(exchange));
         checkIfProductIsNull(exchange, product);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(product);
-        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        String response = JsonUtil.toJson(responseDTO);
         ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
@@ -57,26 +57,26 @@ public class ProductController implements ControllerHandler {
         Product deleted = service.deleteProduct(getId(exchange));
         checkIfProductIsNull(exchange, deleted);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(deleted);
-        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        String response = JsonUtil.toJson(responseDTO);
         ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void update(HttpExchange exchange) throws IOException {
-        ProductRequestDTO dto = JsonUtil.fromJsonToDTO(readBody(exchange));
+        ProductRequestDTO dto = JsonUtil.toRequestDTO(readBody(exchange));
         Product product = ProductMapper.toEntity(dto);
         Product updated = service.updateProduct(getId(exchange), product);
         checkIfProductIsNull(exchange, updated);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(updated);
-        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        String response = JsonUtil.toJson(responseDTO);
         ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 
     public void patch(HttpExchange exchange) throws IOException {
-        ProductPatch patch = JsonUtil.fromJsonPatch(readBody(exchange));
+        ProductPatch patch = JsonUtil.toPatch(readBody(exchange));
         Product updated = service.patchProduct(getId(exchange), patch);
         checkIfProductIsNull(exchange, updated);
         ProductResponseDTO responseDTO = ProductMapper.toResponse(updated);
-        String response = JsonUtil.toJsonFromDTO(responseDTO);
+        String response = JsonUtil.toJson(responseDTO);
         ResponseUtil.send(exchange, 200, ResponseUtil.success(response));
     }
 

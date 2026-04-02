@@ -35,30 +35,6 @@ public class Router {
         } else {
             send(exchange, 404, ResponseUtil.error("Endpoint não Encontrado"));
         }
-            /*if(!route.method.equals(method)) {
-                send(exchange, 405, ResponseUtil.error("Método não Permitido"));
-            };
-            if(!route.hasParam && route.path.equals(path)){
-                route.handler.handle(exchange);
-                return;
-            }
-            if(route.hasParam){
-                String basePath = route.path.substring(0, route.path.indexOf("/{"));
-                if(path.startsWith(basePath + "/")){
-                    String idPart = path.substring(basePath.length() + 1);
-                    try{
-                        //Long id = Long.parseLong(idPart);
-                        params.put("id", idPart);
-                        exchange.setAttribute("params", params);
-                        route.handler.handle(exchange);
-                        return;
-                    } catch (NumberFormatException ignore){}
-                }
-            }
-        }
-        send(exchange, 404, ResponseUtil.error("EdnPoint não Encontrado"));
-        //ResponseUtil.send(exchange, 404, ResponseUtil.error("EndPoint Não Encontrado"));
-        */
     }
 
     private static void send(HttpExchange exchange, int status, String body) throws IOException {

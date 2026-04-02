@@ -3,7 +3,6 @@ package github.ebrauta.route;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +37,7 @@ public class Route {
             return false;
         }
     }
-    public void extractParams(HttpExchange exchange, String requestPath) throws IOException {
+    public void extractParams(HttpExchange exchange, String requestPath) {
         if(!hasParam) return;
         String idPart = requestPath.substring(basePath.length() + 1);
         Map<String,String> params = new HashMap<>();

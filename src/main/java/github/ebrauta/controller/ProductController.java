@@ -20,7 +20,7 @@ public class ProductController {
         this.service = service;
     }
 
-    public Response getAll(Request request) {
+    public Response getAll(Request ignoredRequest) {
         List<Product> products = service.getAllProducts();
         List<ProductResponseDTO> responseList = products.stream().map(ProductMapper::toResponse).toList();
         String response = JsonUtil.toJsonList(responseList, JsonUtil::toJson);

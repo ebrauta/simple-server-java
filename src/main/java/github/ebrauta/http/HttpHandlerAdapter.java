@@ -2,7 +2,6 @@ package github.ebrauta.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import github.ebrauta.util.CorsUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,8 +22,6 @@ public class HttpHandlerAdapter implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        CorsUtil.preFlight(exchange);
-        CorsUtil.addCorsHeaders(exchange);
         Map<String, String> params = extractParams(exchange.getAttribute("params"));
         Request request = new Request(exchange.getRequestMethod(), exchange.getRequestURI().getPath(), readBody(exchange), params);
         Response response = handler.apply(request);

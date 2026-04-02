@@ -4,10 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
 import github.ebrauta.http.HttpHandlerAdapter;
 import github.ebrauta.http.Response;
-import github.ebrauta.middleware.ExceptionMiddleware;
-import github.ebrauta.middleware.LoggingMiddleware;
-import github.ebrauta.middleware.Middleware;
-import github.ebrauta.middleware.MiddlewareChain;
+import github.ebrauta.middleware.*;
 import github.ebrauta.repository.ProductRepository;
 import github.ebrauta.route.Router;
 import github.ebrauta.service.ProductService;
@@ -39,6 +36,7 @@ public class Main {
         ProductService productService = new ProductService(productRepository);
         ProductController productController = new ProductController(productService);
         List<Middleware> middlewares = List.of(
+                new CorsMiddleware(),
                 new ExceptionMiddleware(),
                 new LoggingMiddleware()
         );

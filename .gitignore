@@ -40,3 +40,4 @@ build/
 
 ## Arquivo pessoal ##
 fluxo.md
+./src/main/resources/data/products.json

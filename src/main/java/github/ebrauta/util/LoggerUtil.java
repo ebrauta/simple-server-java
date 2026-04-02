@@ -8,12 +8,7 @@ public class LoggerUtil {
 
     public static void log(String method, String path, int status, long duration){
         String timestamp = LocalDateTime.now().format(FORMATTER);
-        System.out.println(
-                "[" + timestamp + "] "
-                + method + " "
-                + path + " "
-                + status + " ("
-                + duration + " ms)"
-        );
+        String message = String.format("[ %s ] %s %s %s (%d ms)", timestamp, method, path, status, duration);
+        System.out.println(message);
     }
 }

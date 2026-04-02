@@ -2,11 +2,9 @@ package github.ebrauta;
 
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
-import github.ebrauta.middleware.ExceptionMiddleware;
-import github.ebrauta.middleware.LoggingMiddleware;
-import github.ebrauta.middleware.Middleware;
-import github.ebrauta.middleware.MiddlewareChain;
+import github.ebrauta.middleware.*;
 import github.ebrauta.repository.ProductRepository;
+import github.ebrauta.route.Router;
 import github.ebrauta.service.ProductService;
 import github.ebrauta.util.Banner;
 
@@ -16,6 +14,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        Router router  = new Router();
         int port = getPort();
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/test", exchange -> {
@@ -24,21 +23,28 @@ public class Main {
             exchange.getResponseBody().write(response.getBytes());
             exchange.close();
         });
-        createProductContext(server);
+        createProductContext(server, router);
         server.start();
         Banner.print(port);
     }
 
-    private static void createProductContext(HttpServer server) {
-        ProductRepository repository = new ProductRepository();
-        ProductService service = new ProductService(repository);
-        ProductController controller = new ProductController(service);
+    private static void createProductContext(HttpServer server, Router router) {
+        ProductRepository productRepository = new ProductRepository();
+        ProductService productService = new ProductService(productRepository);
+        ProductController productController = new ProductController(productService);
+        router.register("GET", "/products", productController::getAll);
+        router.register("POST", "/products", productController::create);
+        router.register("GET", "/products/{id}", productController::getById);
+        router.register("DELETE", "/products/{id}", productController::delete);
+        router.register("PUT", "/products/{id}", productController::update);
+        router.register("PATCH", "/products/{id}", productController::patch);
         List<Middleware> middlewares = List.of(
+                new CorsMiddleware(),
                 new ExceptionMiddleware(),
                 new LoggingMiddleware()
         );
         server.createContext("/products", exchange -> {
-            MiddlewareChain chain = new MiddlewareChain(middlewares, controller::handle);
+            MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
             chain.next(exchange);
         });
     }

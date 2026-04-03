@@ -3,7 +3,6 @@ package github.ebrauta;
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
 import github.ebrauta.http.HttpHandlerAdapter;
-import github.ebrauta.http.Response;
 import github.ebrauta.middleware.*;
 import github.ebrauta.repository.ProductRepository;
 import github.ebrauta.route.Router;
@@ -13,6 +12,7 @@ import github.ebrauta.util.ResponseUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class Main {
@@ -28,7 +28,11 @@ public class Main {
 
     private static void testContext(HttpServer server){
         String message = ResponseUtil.success("Api funcionando. Versão 1.0");
-        server.createContext("/test", new HttpHandlerAdapter(req -> Response.ok(message)));
+        server.createContext("/test", exchange -> {
+            exchange.sendResponseHeaders(200, message.getBytes(StandardCharsets.UTF_8).length);
+            exchange.getResponseBody().write(message.getBytes(StandardCharsets.UTF_8));
+            exchange.close();
+        });
     }
 
     private static void createProductContext(HttpServer server, Router router) {
@@ -40,16 +44,19 @@ public class Main {
                 new ExceptionMiddleware(),
                 new LoggingMiddleware()
         );
-        MiddlewareChain chain = new MiddlewareChain(middlewares);
+        MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
 
-        router.register("GET", "/products", new HttpHandlerAdapter(chain.build(productController::getAll)));
-        router.register("POST", "/products", new HttpHandlerAdapter(chain.build(productController::create)));
-        router.register("GET", "/products/{id}", new HttpHandlerAdapter(chain.build(productController::getById)));
-        router.register("DELETE", "/products/{id}", new HttpHandlerAdapter(chain.build(productController::delete)));
-        router.register("PUT", "/products/{id}", new HttpHandlerAdapter(chain.build(productController::update)));
-        router.register("PATCH", "/products/{id}", new HttpHandlerAdapter(chain.build(productController::patch)));
+        router.register("GET", "/products", productController::getAll);
+        router.register("POST", "/products", productController::create);
+        router.register("GET", "/products/{id}", productController::getById);
+        router.register("DELETE", "/products/{id}", productController::delete);
+        router.register("PUT", "/products/{id}", productController::update);
+        router.register("PATCH", "/products/{id}", productController::patch);
 
-        server.createContext("/", router::handle);
+        server.createContext("/", exchange -> {
+            HttpHandlerAdapter adapter = new HttpHandlerAdapter(chain);
+            adapter.handle(exchange);
+        } );
     }
 
     private static int getPort() {

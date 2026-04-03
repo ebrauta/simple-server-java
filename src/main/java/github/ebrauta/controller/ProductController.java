@@ -38,7 +38,7 @@ public class ProductController {
 
 
     public Response getById(Request request){
-        Long id = Long.parseLong(request.getParams("id"));
+        Long id = Long.parseLong(request.getParam("id"));
         Product product = service.getProductById(id);
         if (product == null) {
             return Response.notFound(ResponseUtil.error("Produto não Encontrado"));
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     public Response delete(Request request){
-        Long id = Long.parseLong(request.getParams("id"));
+        Long id = Long.parseLong(request.getParam("id"));
         Product deleted = service.deleteProduct(id);
         if (deleted == null) {
             return Response.notFound(ResponseUtil.error("Produto não Encontrado"));
@@ -60,7 +60,7 @@ public class ProductController {
     }
 
     public Response update(Request request) {
-        Long id = Long.parseLong(request.getParams("id"));
+        Long id = Long.parseLong(request.getParam("id"));
         ProductRequestDTO dto = JsonUtil.toRequestDTO(request.getBody());
         Product product = ProductMapper.toEntity(dto);
         Product updated = service.updateProduct(id, product);
@@ -73,7 +73,7 @@ public class ProductController {
     }
 
     public Response patch(Request request) {
-        Long id = Long.parseLong(request.getParams("id"));
+        Long id = Long.parseLong(request.getParam("id"));
         ProductPatch patch = JsonUtil.toPatch(request.getBody());
         Product patched = service.patchProduct(id, patch);
         if(patched == null){

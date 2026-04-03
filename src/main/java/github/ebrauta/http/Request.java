@@ -1,6 +1,12 @@
 package github.ebrauta.http;
 
+import com.sun.net.httpserver.HttpExchange;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Request {
     private final String method;
@@ -19,7 +25,16 @@ public class Request {
     public String getBody(){
         return body;
     }
-    public String getParams(String key){
+    public String getParam(String key){
         return params.get(key);
+    }
+    public void setAttribute(String key, String value){
+        params.put(key, value);
+    }
+    public static Request from(HttpExchange exchange) {
+        return new Request(exchange.getRequestMethod(), exchange.getRequestURI().getPath(), readBody(exchange), new HashMap<>());
+    }
+    private static String readBody(HttpExchange exchange) {
+        return new BufferedReader(new InputStreamReader(exchange.getRequestBody())).lines().collect(Collectors.joining());
     }
 }

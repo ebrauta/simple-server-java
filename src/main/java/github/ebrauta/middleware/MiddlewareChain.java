@@ -8,17 +8,21 @@ import java.util.function.Function;
 
 public class MiddlewareChain {
     private final List<Middleware> middlewares;
+    private final Function<Request, Response> finalHandler;
 
-    public MiddlewareChain(List<Middleware> middlewares) {
+    public MiddlewareChain(List<Middleware> middlewares, Function<Request, Response> finalHandler) {
         this.middlewares = middlewares;
+        this.finalHandler = finalHandler;
     }
-    public Function<Request, Response> build(Function<Request, Response> handler) {
-        Function<Request, Response> next = handler;
-        for(int i = middlewares.size() - 1; i >= 0; i--){
-            Middleware middleware = middlewares.get(i);
-            Function<Request,Response> currentNext = next;
-            next = request -> middleware.apply(request, currentNext);
+    public Response apply(Request request){
+        return execute(request, 0);
+    }
+    public Response execute(Request request, int index) {
+        if(index < middlewares.size()){
+            Middleware current = middlewares.get(index);
+            return current.apply(request, req -> execute(req, index+1));
+        } else {
+            return finalHandler.apply(request);
         }
-        return next;
     }
 }

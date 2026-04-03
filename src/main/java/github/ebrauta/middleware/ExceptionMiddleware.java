@@ -1,20 +1,21 @@
 package github.ebrauta.middleware;
 
-import com.sun.net.httpserver.HttpExchange;
 import github.ebrauta.exception.ValidationException;
+import github.ebrauta.http.Request;
+import github.ebrauta.http.Response;
 import github.ebrauta.util.ResponseUtil;
 
-import java.io.IOException;
+import java.util.function.Function;
 
 public class ExceptionMiddleware implements Middleware {
     @Override
-    public void handle(HttpExchange exchange, MiddlewareChain chain) throws IOException {
+    public Response apply(Request request, Function<Request, Response> next) {
         try {
-            chain.next(exchange);
+            return next.apply(request);
         } catch (ValidationException e) {
-            ResponseUtil.send(exchange, 400, ResponseUtil.error(e.getMessage()));
+            return Response.badRequest(ResponseUtil.error(e.getMessage()));
         } catch (Exception e) {
-            ResponseUtil.send(exchange, 500, ResponseUtil.error("Erro interno do Servidor"));
+            return Response.serverError(ResponseUtil.error(e.getMessage()));
         }
     }
 }

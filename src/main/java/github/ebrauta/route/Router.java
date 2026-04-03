@@ -1,48 +1,41 @@
 package github.ebrauta.route;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import github.ebrauta.util.ResponseUtil;
+import github.ebrauta.http.Request;
+import github.ebrauta.http.Response;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class Router {
     private final List<Route> routes = new ArrayList<>();
 
-    public void register(String method, String path, HttpHandler handler) {
+    public void register(String method, String path, Function<Request, Response> handler) {
         routes.add(new Route(method, path, handler));
     }
 
-    public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        String path = exchange.getRequestURI().getPath();
-        boolean pathMatched = false;
+    public Response handle(Request request){
+        String method = request.getMethod();
+        String path = request.getPath();
 
         for (Route route : routes) {
-            if (!route.matchesPath(path)) continue;
-            pathMatched = true;
             if (!route.method.equals(method)) continue;
-            route.extractParams(exchange, path);
-            route.handler.handle(exchange);
-            return;
-        }
-        if (pathMatched) {
-            send(exchange, 405, ResponseUtil.error("Método não Permitido"));
-        } else {
-            send(exchange, 404, ResponseUtil.error("Endpoint não Encontrado"));
-        }
-    }
+            if(!route.hasParam && route.path.equals(path)){
+                return route.handler.apply(request);
+            }
+            if(route.hasParam){
+                String basePath = route.path.substring(0, route.path.indexOf("/{"));
+                if(path.startsWith(basePath + "/")){
+                    String idPart = path.substring(basePath.length() + 1);
+                    try {
+                        Long.parseLong(idPart);
+                        request.setAttribute("id", idPart);
+                        return route.handler.apply(request);
+                    } catch (NumberFormatException ignored) {}
 
-    private static void send(HttpExchange exchange, int status, String body) throws IOException {
-        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
-        exchange.sendResponseHeaders(status, bytes.length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(bytes);
-        os.close();
+                }
+            }
+        }
+        return Response.endpointNotFound();
     }
 }

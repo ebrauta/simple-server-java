@@ -1,16 +1,7 @@
 package github.ebrauta.util.json;
 
-import github.ebrauta.dto.ProductRequestDTO;
-import github.ebrauta.dto.ProductResponseDTO;
-import github.ebrauta.model.Product;
-import github.ebrauta.model.ProductPatch;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class JsonParser {
 
@@ -28,22 +19,22 @@ public class JsonParser {
     }
 
     public static Long parseLong(String value) {
-        if (value.equals("null")) return 0L;
+        if (value == null || "null".equals(value)) return 0L;
         return Long.parseLong(value);
     }
 
     public static String parseString(String value) {
-        if (value.equals("null")) return "";
+        if (value == null || "null".equals(value)) return null;
         return value.replace("\"", "");
     }
 
     public static Double parseDouble(String value) {
-        if (value.equals("null")) return 0.0;
+        if (value == null || "null".equals(value)) return null;
         return Double.parseDouble(value);
     }
 
     public static Boolean parseBoolean(String value) {
-        if (value.equals("null")) return true;
+        if (value == null || "null".equals(value)) return true;
         return Boolean.parseBoolean(value);
     }
 }

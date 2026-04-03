@@ -4,7 +4,6 @@ import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;
 import github.ebrauta.util.FileUtil;
 import github.ebrauta.util.json.JsonMapper;
-import github.ebrauta.util.json.JsonParser;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;

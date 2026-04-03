@@ -3,7 +3,8 @@ package github.ebrauta.repository;
 import github.ebrauta.model.Product;
 import github.ebrauta.model.ProductPatch;
 import github.ebrauta.util.FileUtil;
-import github.ebrauta.util.JsonUtil;
+import github.ebrauta.util.json.JsonMapper;
+import github.ebrauta.util.json.JsonParser;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -15,11 +16,11 @@ public class ProductRepository {
 
     public ProductRepository() {
         String json = FileUtil.read(FILE_PATH);
-        this.products = JsonUtil.toProductList(json);
+        this.products = JsonMapper.toProductList(json);
     }
 
     private void persist(){
-        String json = JsonUtil.toJsonList(products, JsonUtil::toJson);
+        String json = JsonMapper.toJsonList(products, JsonMapper::toJson);
         FileUtil.write(FILE_PATH, json);
     }
 

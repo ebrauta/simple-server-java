@@ -3,7 +3,6 @@ package github.ebrauta.middleware;
 import github.ebrauta.exception.ValidationException;
 import github.ebrauta.http.Request;
 import github.ebrauta.http.Response;
-import github.ebrauta.util.ResponseUtil;
 
 import java.util.function.Function;
 
@@ -13,9 +12,9 @@ public class ExceptionMiddleware implements Middleware {
         try {
             return next.apply(request);
         } catch (ValidationException e) {
-            return Response.badRequest(ResponseUtil.error(e.getMessage()));
+            return Response.badRequest(e.getMessage());
         } catch (Exception e) {
-            return Response.serverError(ResponseUtil.error(e.getMessage()));
+            return Response.serverError(e.getMessage());
         }
     }
 }

@@ -2,7 +2,6 @@ package github.ebrauta.route;
 
 import github.ebrauta.http.Request;
 import github.ebrauta.http.Response;
-import github.ebrauta.util.ResponseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,6 @@ public class Router {
                 }
             }
         }
-        return Response.notFound(ResponseUtil.error("Endpoint Não Encontrado"));
+        return Response.endpointNotFound();
     }
 }

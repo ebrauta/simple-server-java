@@ -22,7 +22,7 @@ public class HttpHandlerAdapter implements HttpHandler {
         for(var entry: response.getHeaders().entrySet()) {
             exchange.getResponseHeaders().set(entry.getKey(), entry.getValue());
         }
-        byte[] bytes = response.getBody().getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = response.onJsonFormat().getBytes(StandardCharsets.UTF_8);
         if(response.getStatus() == 204) {
             exchange.sendResponseHeaders(response.getStatus(), -1);
         } else {

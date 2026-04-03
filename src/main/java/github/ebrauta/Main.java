@@ -3,12 +3,12 @@ package github.ebrauta;
 import com.sun.net.httpserver.HttpServer;
 import github.ebrauta.controller.ProductController;
 import github.ebrauta.http.HttpHandlerAdapter;
+import github.ebrauta.http.Response;
 import github.ebrauta.middleware.*;
 import github.ebrauta.repository.ProductRepository;
 import github.ebrauta.route.Router;
 import github.ebrauta.service.ProductService;
 import github.ebrauta.util.Banner;
-import github.ebrauta.util.ResponseUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,7 +27,7 @@ public class Main {
     }
 
     private static void testContext(HttpServer server){
-        String message = ResponseUtil.success("Api funcionando. Versão 1.0");
+        String message = Response.ok("Api funcionando. Versão 1.0").onJsonFormat();
         server.createContext("/test", exchange -> {
             exchange.sendResponseHeaders(200, message.getBytes(StandardCharsets.UTF_8).length);
             exchange.getResponseBody().write(message.getBytes(StandardCharsets.UTF_8));

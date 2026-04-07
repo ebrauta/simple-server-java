@@ -1,7 +1,7 @@
 package github.ebrauta.util;
 
 public class Banner {
-    public static void print(int port){
+    public static void print(int port, String environment){
         System.out.printf("""
                  ____  _             _ _   _     _____                   \s
                 / ___|| |_ ___  __ _| | |_| |__ |  ___|__  _ __ __ _  ___\s
@@ -13,9 +13,9 @@ public class Banner {
                        🚀 StealthForge API
                
                        ✔ Server running on port: %d
-                       ✔ Environment: DEV
+                       ✔ Environment: %s
                        ✔ Status: ONLINE
                
-                       %n""", port);
+                       %n""", port, environment);
     }
 }

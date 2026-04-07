@@ -20,7 +20,7 @@ public class Router {
         String path = request.getPath();
 
         for (Route route : routes) {
-            if (!route.method.equals(method)) continue;
+            if (!route.method.toString().equals(method)) continue;
             if(!route.hasParam && route.path.equals(path)){
                 return route.handler.apply(request);
             }

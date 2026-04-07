@@ -32,7 +32,7 @@ public class JsonParser {
         if(peek() == '}') {
             consume('}');
             return map;
-        };
+        }
         while(true) {
             String key = parseString();
             skipWhiteSpace();
@@ -127,7 +127,7 @@ public class JsonParser {
             return writeObject((Map<String, Object>) value);
         }
 
-        throw new RuntimeException("Unsupported type: " + value.getClass());
+        throw new RuntimeException("Tipo não suportado: " + value.getClass());
     }
 
     private static String writeObject(Map<String, Object> map) {

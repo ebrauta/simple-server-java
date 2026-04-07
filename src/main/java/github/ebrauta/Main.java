@@ -12,11 +12,9 @@ import github.ebrauta.util.JsonParser;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -38,7 +36,7 @@ public class Main {
                 new LoggingMiddleware()
         );
         MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
-        Function<Request, Response> testFunction = (req) -> Response.ok(responseJson);;
+        Function<Request, Response> testFunction = (req) -> Response.ok(responseJson);
         router.register(HttpMethod.GET,"/test", testFunction);
         server.createContext("/", exchange -> {
             HttpHandlerAdapter adapter = new HttpHandlerAdapter(chain);

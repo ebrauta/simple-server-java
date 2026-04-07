@@ -1,5 +1,6 @@
 package github.ebrauta.route;
 
+import github.ebrauta.http.HttpMethod;
 import github.ebrauta.http.Request;
 import github.ebrauta.http.Response;
 
@@ -10,7 +11,7 @@ import java.util.function.Function;
 public class Router {
     private final List<Route> routes = new ArrayList<>();
 
-    public void register(String method, String path, Function<Request, Response> handler) {
+    public void register(HttpMethod method, String path, Function<Request, Response> handler) {
         routes.add(new Route(method, path, handler));
     }
 
@@ -19,7 +20,7 @@ public class Router {
         String path = request.getPath();
 
         for (Route route : routes) {
-            if (!route.method.equals(method)) continue;
+            if (!route.method.toString().equals(method)) continue;
             if(!route.hasParam && route.path.equals(path)){
                 return route.handler.apply(request);
             }

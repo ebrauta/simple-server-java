@@ -3,7 +3,7 @@ package github.ebrauta.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LoggerUtil {
+public class Logger {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public static void log(String method, String path, int status, long duration){

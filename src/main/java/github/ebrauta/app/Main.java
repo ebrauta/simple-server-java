@@ -5,7 +5,6 @@ import github.ebrauta.core.http.HttpMethod;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
 

@@ -1,18 +1,15 @@
 package github.ebrauta.core.router;
 
 import github.ebrauta.core.http.HttpMethod;
-import github.ebrauta.core.http.Request;
-import github.ebrauta.core.http.Response;
-
-import java.util.function.Function;
+import github.ebrauta.core.http.IHandler;
 
 public class Route {
     final HttpMethod method;
     final String path;
-    final Function<Request, Response> handler;
+    final IHandler handler;
     final boolean hasParam;
 
-    public Route(HttpMethod method, String path, Function<Request, Response> handler) {
+    public Route(HttpMethod method, String path, IHandler handler) {
         this.method = method;
         this.path = path;
         this.handler = handler;

@@ -1,14 +1,15 @@
-package github.ebrauta;
+package github.ebrauta.app;
 
 import com.sun.net.httpserver.HttpServer;
-import github.ebrauta.http.HttpHandlerAdapter;
-import github.ebrauta.http.HttpMethod;
-import github.ebrauta.http.Request;
-import github.ebrauta.http.Response;
-import github.ebrauta.middleware.*;
-import github.ebrauta.route.Router;
-import github.ebrauta.util.Banner;
-import github.ebrauta.util.JsonParser;
+import github.ebrauta.app.middleware.*;
+import github.ebrauta.app.util.Banner;
+import github.ebrauta.app.util.JsonParser;
+import github.ebrauta.core.adapter.HttpHandlerAdapter;
+import github.ebrauta.core.http.HttpMethod;
+import github.ebrauta.core.http.Request;
+import github.ebrauta.core.http.Response;
+import github.ebrauta.core.middleware.*;
+import github.ebrauta.core.router.Router;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -1,4 +1,4 @@
-package github.ebrauta.http;
+package github.ebrauta.core.http;
 
 import com.sun.net.httpserver.HttpExchange;
 

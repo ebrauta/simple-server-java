@@ -1,4 +1,4 @@
-package github.ebrauta.http;
+package github.ebrauta.core.http;
 
 public enum HttpStatus {
     OK(200),

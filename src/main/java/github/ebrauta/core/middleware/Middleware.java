@@ -1,7 +1,7 @@
-package github.ebrauta.middleware;
+package github.ebrauta.core.middleware;
 
-import github.ebrauta.http.Request;
-import github.ebrauta.http.Response;
+import github.ebrauta.core.http.Request;
+import github.ebrauta.core.http.Response;
 
 import java.util.function.Function;
 

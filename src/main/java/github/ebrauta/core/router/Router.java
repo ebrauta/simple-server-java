@@ -1,25 +1,25 @@
-package github.ebrauta.route;
+package github.ebrauta.core.router;
 
-import github.ebrauta.http.HttpMethod;
-import github.ebrauta.http.Request;
-import github.ebrauta.http.Response;
+import github.ebrauta.core.http.HttpMethod;
+import github.ebrauta.core.http.Request;
+import github.ebrauta.core.http.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 public class Router {
-    private final List<Route> routes = new ArrayList<>();
+    private final List<github.ebrauta.core.router.Route> routes = new ArrayList<>();
 
     public void register(HttpMethod method, String path, Function<Request, Response> handler) {
-        routes.add(new Route(method, path, handler));
+        routes.add(new github.ebrauta.core.router.Route(method, path, handler));
     }
 
     public Response handle(Request request){
         String method = request.getMethod();
         String path = request.getPath();
 
-        for (Route route : routes) {
+        for (github.ebrauta.core.router.Route route : routes) {
             if (!route.method.toString().equals(method)) continue;
             if(!route.hasParam && route.path.equals(path)){
                 return route.handler.apply(request);

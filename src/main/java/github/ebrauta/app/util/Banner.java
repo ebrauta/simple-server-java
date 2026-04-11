@@ -1,4 +1,4 @@
-package github.ebrauta.util;
+package github.ebrauta.app.util;
 
 public class Banner {
     public static void print(int port, String environment){

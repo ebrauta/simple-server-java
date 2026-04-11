@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Application app = Application.create();
         app.router().register(HttpMethod.GET,"/test", createTestRoute());
         app.listen();

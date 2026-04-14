@@ -1,6 +1,7 @@
 package github.ebrauta.app;
 
 import com.sun.net.httpserver.HttpServer;
+import github.ebrauta.app.config.ApplicationConfig;
 import github.ebrauta.app.middleware.CorsMiddleware;
 import github.ebrauta.app.middleware.ExceptionMiddleware;
 import github.ebrauta.app.middleware.LoggingMiddleware;
@@ -27,13 +28,16 @@ public class Application {
 
     public void listen(){
         try {
-            int port = getPort();
+            int port = ApplicationConfig.getPort();
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             List<Middleware> middlewares = List.of(
                     new CorsMiddleware(),
                     new ExceptionMiddleware(),
                     new LoggingMiddleware()
             );
+            ApplicationConfig.addAllowedOrigins("*");
+            ApplicationConfig.addAllowedMethods("GET");
+            ApplicationConfig.addAllowedMethods("OPTIONS");
             MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
             server.createContext("/", exchange -> {
                 HttpHandlerAdapter adapter = new HttpHandlerAdapter(chain);
@@ -44,13 +48,5 @@ public class Application {
         } catch (IOException e) {
             throw new RuntimeException("Falha ao iniciar o Servidor", e);
         }
-    }
-
-    private static int getPort() {
-        String envPort = System.getenv("PORT");
-        if (envPort != null) {
-            return Integer.parseInt(envPort);
-        }
-        return 8080;
     }
 }

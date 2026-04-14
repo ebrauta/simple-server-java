@@ -1,5 +1,6 @@
 package github.ebrauta.app.middleware;
 
+import github.ebrauta.app.config.ApplicationConfig;
 import github.ebrauta.core.http.IHandler;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
@@ -17,8 +18,10 @@ public class CorsMiddleware implements Middleware {
     }
 
     private Response addDefaultHeaders(Response entry) {
-        return entry.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500")
-                .header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+        String allowedOrigin = ApplicationConfig.getCorsOrigins();
+        String allowedMethods = ApplicationConfig.getCorsMethods();
+        return entry.header("Access-Control-Allow-Origin", allowedOrigin)
+                .header("Access-Control-Allow-Methods", allowedMethods)
                 .header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
 }

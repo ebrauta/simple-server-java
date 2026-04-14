@@ -28,12 +28,16 @@ Este projeto foi criado com o propósito de:
 ## 📦 Arquitetura
 
 ```
-com.stealthforge/
- ├── controller/     # Entrada HTTP (rotas)
- ├── service/        # Regras de negócio
- ├── repository/     # Persistência em memória
- ├── model/          # Entidades e DTOs
- └── util/           # Utilitários (JSON, CORS, etc.)
+github.ebrauta/
+ ├── app/               # Aplicação
+ | ├── config/              # Configurações da Aplicação
+ | ├── middleware/          # Middlewares (Cors, Exception e Logging)
+ | └── util/                # Utilitários (Banner, Json e Logger)
+ └── core/              # Núcleo
+   ├── adapter/             # Adaptador do Controller 
+   ├── http/                # Requests e Responses
+   ├── middleware/          # Núcleo de middlewares
+   └── router               # Controlador de Rotas
 ```
 
 ---
@@ -42,75 +46,23 @@ com.stealthforge/
 
 * [x] Servidor HTTP nativo
 * [x] Roteamento manual
-* [x] CRUD completo de produtos
 * [x] JSON (serialização/deserialização manual)
 * [x] CORS (preflight + headers)
-* [x] Soft delete
-* [x] PUT (update completo)
-* [x] PATCH (update parcial)
-* [x] Tratamento básico de erros
 
 ---
 
 ## 📌 Endpoints
 
-### 🔹 Listar produtos
+### 🔹 Teste
 
 ```
-GET /products
+GET /test
 ```
-
-### 🔹 Buscar por ID
-
-```
-GET /products/{id}
-```
-
-### 🔹 Criar produto
-
-```
-POST /products
-```
-
-Body:
-
-```json
-{
-  "name": "Produto",
-  "price": 100.0
-}
-```
-
----
-
-### 🔹 Atualizar completamente
-
-```
-PUT /products/{id}
-```
-
----
-
-### 🔹 Atualizar parcialmente
-
-```
-PATCH /products/{id}
-```
-
----
-
-### 🔹 Deletar (soft delete)
-
-```
-DELETE /products/{id}
-```
-
 ---
 
 ## ⚠️ Observações importantes
 
 * O JSON é manipulado manualmente (sem Jackson/Gson)
-* Os dados são armazenados em memória (sem banco)
 * O projeto é educacional, focado em aprendizado
 
 ---
@@ -141,17 +93,6 @@ http://localhost:8080
 
 ---
 
-## 🚧 Próximos passos
-
-* Validação de dados
-* Padronização de resposta
-* Melhor parser JSON
-* Logging estruturado
-* Middleware (interceptadores)
-* Persistência real (arquivo ou banco)
-
----
-
 ## 🧠 Aprendizados
 
 Este projeto cobre conceitos fundamentais como:
@@ -160,8 +101,6 @@ Este projeto cobre conceitos fundamentais como:
 * CORS
 * Idempotência
 * Arquitetura em camadas
-* Manipulação de dados
-* Design de API REST
 
 ---
 

@@ -1,25 +1,25 @@
 package github.ebrauta.core.middleware;
 
+import github.ebrauta.core.http.IHandler;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class MiddlewareChain {
-    private final List<github.ebrauta.core.middleware.Middleware> middlewares;
-    private final Function<Request, Response> finalHandler;
+    private final List<Middleware> middlewares;
+    private final github.ebrauta.core.http.IHandler finalHandler;
 
-    public MiddlewareChain(List<github.ebrauta.core.middleware.Middleware> middlewares, Function<github.ebrauta.core.http.Request, github.ebrauta.core.http.Response> finalHandler) {
+    public MiddlewareChain(List<Middleware> middlewares, IHandler finalHandler) {
         this.middlewares = middlewares;
         this.finalHandler = finalHandler;
     }
-    public github.ebrauta.core.http.Response apply(github.ebrauta.core.http.Request request){
+    public Response apply(Request request){
         return execute(request, 0);
     }
-    public github.ebrauta.core.http.Response execute(github.ebrauta.core.http.Request request, int index) {
+    public Response execute(Request request, int index) {
         if(index < middlewares.size()){
-            github.ebrauta.core.middleware.Middleware current = middlewares.get(index);
+            Middleware current = middlewares.get(index);
             return current.apply(request, req -> execute(req, index+1));
         } else {
             return finalHandler.apply(request);

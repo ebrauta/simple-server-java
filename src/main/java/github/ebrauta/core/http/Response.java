@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Response {
-    private final github.ebrauta.core.http.HttpStatus status;
+    private final HttpStatus status;
     private final Object data;
     private final String errorMessage;
     private final Map<String, String> headers;
 
-    public Response(github.ebrauta.core.http.HttpStatus status, Object data, String error) {
+    public Response(HttpStatus status, Object data, String error) {
         this.status = status;
         this.data = data;
         this.errorMessage = error;
@@ -26,12 +26,12 @@ public class Response {
         return headers;
     }
 
-    public static Response ok(Object data){ return new Response(github.ebrauta.core.http.HttpStatus.OK, data, null); }
+    public static Response ok(Object data){ return new Response(HttpStatus.OK, data, null); }
     //public static Response created(Object data){ return new Response(HttpStatus.CREATED, data, null); }
-    public static Response noContent(){ return new Response(github.ebrauta.core.http.HttpStatus.NO_CONTENT, "", null); }
-    public static Response endpointNotFound(){ return new Response(github.ebrauta.core.http.HttpStatus.NOT_FOUND, null, "EndPoint não encontrado" ); }
+    public static Response noContent(){ return new Response(HttpStatus.NO_CONTENT, "", null); }
+    public static Response endpointNotFound(){ return new Response(HttpStatus.NOT_FOUND, null, "EndPoint não encontrado" ); }
     //public static Response badRequest(String error){ return new Response(HttpStatus.BAD_REQUEST, null, error); }
-    public static Response serverError(String error){ return new Response(github.ebrauta.core.http.HttpStatus.INTERNAL_SERVER_ERROR, null, "Erro de Servidor: " + error); }
+    public static Response serverError(String error){ return new Response(HttpStatus.INTERNAL_SERVER_ERROR, null, "Erro de Servidor: " + error); }
 
     public String onJsonFormat(){
         boolean isSuccess = errorMessage == null;

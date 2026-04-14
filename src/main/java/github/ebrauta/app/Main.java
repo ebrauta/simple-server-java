@@ -1,56 +1,20 @@
 package github.ebrauta.app;
 
-import com.sun.net.httpserver.HttpServer;
-import github.ebrauta.app.middleware.*;
-import github.ebrauta.app.util.Banner;
 import github.ebrauta.app.util.JsonParser;
-import github.ebrauta.core.adapter.HttpHandlerAdapter;
 import github.ebrauta.core.http.HttpMethod;
-import github.ebrauta.core.http.Request;
+import github.ebrauta.core.http.IHandler;
 import github.ebrauta.core.http.Response;
-import github.ebrauta.core.middleware.*;
-import github.ebrauta.core.router.Router;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Router router = new Router();
-        int port = getPort();
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        testContext(server, router);
-        server.start();
-        Banner.print(port, "DEV");
+    public static void main(String[] args) {
+        Application app = Application.create();
+        app.router().register(HttpMethod.GET,"/test", createTestRoute());
+        app.listen();
     }
 
-    private static void testContext(HttpServer server, Router router){
+    private static IHandler createTestRoute(){
         String json = "{\"msg\":\"Api funcionando\",\"version\": 1.0,\"active\": true}";
-        Map<String, Object> map = (Map<String, Object>) JsonParser.parse(json);
-        String responseJson = JsonParser.toJson(map);
-        List<Middleware> middlewares = List.of(
-                new CorsMiddleware(),
-                new ExceptionMiddleware(),
-                new LoggingMiddleware()
-        );
-        MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
-        Function<Request, Response> testFunction = (req) -> Response.ok(responseJson);
-        router.register(HttpMethod.GET,"/test", testFunction);
-        server.createContext("/", exchange -> {
-            HttpHandlerAdapter adapter = new HttpHandlerAdapter(chain);
-            adapter.handle(exchange);
-        });
-    }
-
-
-    private static int getPort() {
-        String envPort = System.getenv("PORT");
-        if (envPort != null) {
-            return Integer.parseInt(envPort);
-        }
-        return 8080;
+        String responseJson = JsonParser.toJson(JsonParser.parse(json));
+        return (req) -> Response.ok(responseJson);
     }
 }

@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class HttpHandlerAdapter implements HttpHandler {
     private final MiddlewareChain chain;
 
-    public HttpHandlerAdapter(github.ebrauta.core.middleware.MiddlewareChain chain) {
+    public HttpHandlerAdapter(MiddlewareChain chain) {
         this.chain = chain;
     }
 

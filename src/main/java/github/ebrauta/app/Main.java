@@ -5,8 +5,6 @@ import github.ebrauta.core.http.HttpMethod;
 import github.ebrauta.core.http.IHandler;
 import github.ebrauta.core.http.Response;
 
-import java.util.Map;
-
 public class Main {
     public static void main(String[] args) {
         Application app = Application.create();
@@ -16,9 +14,7 @@ public class Main {
 
     private static IHandler createTestRoute(){
         String json = "{\"msg\":\"Api funcionando\",\"version\": 1.0,\"active\": true}";
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) JsonParser.parse(json);
-        String responseJson = JsonParser.toJson(map);
+        String responseJson = JsonParser.toJson(JsonParser.parse(json));
         return (req) -> Response.ok(responseJson);
     }
 }

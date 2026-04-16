@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MiddlewareChain {
     private final List<Middleware> middlewares;
-    private final github.ebrauta.core.http.IHandler finalHandler;
+    private final IHandler finalHandler;
 
     public MiddlewareChain(List<Middleware> middlewares, IHandler finalHandler) {
         this.middlewares = middlewares;

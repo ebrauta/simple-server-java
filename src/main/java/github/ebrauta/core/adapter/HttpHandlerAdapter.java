@@ -20,19 +20,16 @@ public class HttpHandlerAdapter implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Request request = github.ebrauta.core.http.Request.from(exchange);
+        Request request = Request.from(exchange);
         Response response = chain.apply(request);
         for(var entry: response.getHeaders().entrySet()) {
             exchange.getResponseHeaders().set(entry.getKey(), entry.getValue());
         }
         byte[] bytes = response.onJsonFormat().getBytes(StandardCharsets.UTF_8);
-        if(response.getStatus() == HttpStatus.NO_CONTENT.getCode()) {
-            exchange.sendResponseHeaders(response.getStatus(), -1);
-        } else {
-            exchange.sendResponseHeaders(response.getStatus(), bytes.length);
+        int exchangeSize = response.getStatus() != HttpStatus.NO_CONTENT.getCode() ? bytes.length : -1;
+        exchange.sendResponseHeaders(response.getStatus(), exchangeSize);
+        try (OutputStream os = exchange.getResponseBody()){
+            os.write(bytes);
         }
-        OutputStream os = exchange.getResponseBody();
-        os.write(bytes);
-        os.close();
     }
 }

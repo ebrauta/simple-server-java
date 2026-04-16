@@ -1,17 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- ============================================ -->
+    <!-- Identificação do Projeto                     -->
+    <!-- ============================================ -->
     <groupId>github.ebrauta</groupId>
     <artifactId>stealthforge</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>StealthForge Framework</name>
+    <description>Framework minimalista de API REST para aprendizado de conceitos fundamentais</description>
+    <url>https://github.com/ebrauta/simple-java-api</url>
+
+    <!-- ============================================ -->
+    <!-- Módulos do Projeto                           -->
+    <!-- ============================================ -->
+    <!--
+    <modules>
+        <module>mini-http</module>
+        <module>mini-json</module>
+        <module>mini-ioc</module>
+        <module>mini-web</module>
+        <module>mini-examples</module>
+    </modules>
+    -->
+    <!-- ============================================ -->
+    <!-- Propriedades Globais                         -->
+    <!-- ============================================ -->
     <properties>
+        <!-- Versão do Java -->
+        <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+<!--        &lt;!&ndash; Encoding &ndash;&gt;
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
     </properties>
+
+    <!-- ============================================ -->
+    <!-- Informações do Desenvolvedor                 -->
+    <!-- ============================================ -->
+    <developers>
+        <developer>
+            <name>Eduardo B. R.</name>
+            <email>ebrauta@gmail.com</email>
+        </developer>
+    </developers>
+
+    <!-- ============================================ -->
+    <!-- Licença                                      -->
+    <!-- ============================================ -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
 
 </project>

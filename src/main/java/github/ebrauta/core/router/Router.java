@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Router {
-    private final List<github.ebrauta.core.router.Route> routes = new ArrayList<>();
+    private final List<Route> routes = new ArrayList<>();
 
     public void register(HttpMethod method, String path, IHandler handler) {
         routes.add(new Route(method, path, handler));
@@ -19,7 +19,7 @@ public class Router {
         String method = request.getMethod();
         String path = request.getPath();
 
-        for (github.ebrauta.core.router.Route route : routes) {
+        for (Route route : routes) {
             if (!route.method.toString().equals(method)) continue;
             if(!route.hasParam && route.path.equals(path)){
                 return route.handler.apply(request);

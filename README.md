@@ -29,15 +29,17 @@ Este projeto foi criado com o propósito de:
 
 ```
 github.ebrauta/
- ├── app/               # Aplicação
+ ├── app/               # Aplicação (Main e Application)
  | ├── config/              # Configurações da Aplicação
  | ├── middleware/          # Middlewares (Cors, Exception e Logging)
+ | ├── controller/          # Controller de Teste
  | └── util/                # Utilitários (Banner, Json e Logger)
  └── core/              # Núcleo
-   ├── adapter/             # Adaptador do Controller 
-   ├── http/                # Requests e Responses
-   ├── middleware/          # Núcleo de middlewares
-   └── router               # Controlador de Rotas
+   ├── adapter/             # Adaptador de Controllers 
+   ├── http/                # Requests e Responses (enums Methods e Status)
+   ├── middleware/          # Núcleo de middlewares (Chain e Interface)
+   ├── ioc/                 # Interface do Handler
+   └── router               # Controlador de Rotas (Router e Route)
 ```
 
 ---
@@ -57,6 +59,8 @@ github.ebrauta/
 
 ```
 GET /test
+GET /test/{id}
+GET /query?page=X&size=Y
 ```
 ---
 

@@ -13,7 +13,7 @@ public class LoggingMiddleware implements Middleware {
         long start = System.currentTimeMillis();
         Response response = next.apply(request);
         long duration = System.currentTimeMillis() - start;
-        Logger.log(request.getMethod(), request.getPath(), response.getStatus(), duration);
+        Logger.log(request.getMethod().name(), request.getPath(), response.getStatus(), duration);
         return response;
     }
 }

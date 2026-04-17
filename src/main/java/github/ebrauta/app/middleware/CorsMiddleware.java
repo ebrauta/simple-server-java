@@ -9,7 +9,7 @@ import github.ebrauta.core.middleware.Middleware;
 public class CorsMiddleware implements Middleware {
     @Override
     public Response apply(Request request, IHandler next) {
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod().name())) {
             return addDefaultHeaders(Response.noContent());
 
         }

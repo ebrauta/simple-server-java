@@ -1,6 +1,6 @@
 package github.ebrauta.core.middleware;
 
-import github.ebrauta.core.http.IHandler;
+import github.ebrauta.core.ioc.IHandler;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
 

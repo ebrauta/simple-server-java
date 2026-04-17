@@ -21,15 +21,30 @@ public class HttpHandlerAdapter implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Request request = Request.from(exchange);
-        Response response = chain.apply(request);
-        for(var entry: response.getHeaders().entrySet()) {
-            exchange.getResponseHeaders().set(entry.getKey(), entry.getValue());
+        Response response;
+        try {
+            response = chain.apply(request);
+        } catch (Exception e) {
+            response = Response.serverError(e.getMessage());
         }
-        byte[] bytes = response.onJsonFormat().getBytes(StandardCharsets.UTF_8);
-        int exchangeSize = response.getStatus() != HttpStatus.NO_CONTENT.getCode() ? bytes.length : -1;
-        exchange.sendResponseHeaders(response.getStatus(), exchangeSize);
-        try (OutputStream os = exchange.getResponseBody()){
-            os.write(bytes);
+        if (response == null) {
+            response = Response.serverError("Resposta nula");
+        }
+        for(var entry: response.getHeaders().entrySet()) {
+            exchange.getResponseHeaders().add(entry.getKey(), entry.getValue());
+        }
+        exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
+        byte[] bytes = new byte[0];
+        int statusCode = response.getStatus();
+        if (statusCode != HttpStatus.NO_CONTENT.getCode()){
+            bytes = response.toJson().getBytes(StandardCharsets.UTF_8);
+        }
+        int length = (statusCode != HttpStatus.NO_CONTENT.getCode() ? bytes.length : -1) ;
+        exchange.sendResponseHeaders(statusCode, length);
+        if(length != -1){
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(bytes);
+            }
         }
     }
 }

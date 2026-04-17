@@ -1,7 +1,7 @@
 package github.ebrauta.core.router;
 
 import github.ebrauta.core.http.HttpMethod;
-import github.ebrauta.core.http.IHandler;
+import github.ebrauta.core.ioc.IHandler;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
 
@@ -53,14 +53,4 @@ public class Route {
     public Response handle(Request request) {
         return handler.apply(request);
     }
-
-    //final String path;
-    //final boolean hasParam;
-
-    /*public Route(HttpMethod method, String path, IHandler handler) {
-        this.method = method;
-        this.path = path;
-        this.handler = handler;
-        this.hasParam = path.contains("{");
-    }*/
 }

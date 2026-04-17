@@ -1,7 +1,6 @@
 package github.ebrauta.app.controller;
 
-import github.ebrauta.core.http.HttpMethod;
-import github.ebrauta.core.http.IHandler;
+import github.ebrauta.core.ioc.IHandler;
 import github.ebrauta.core.http.Response;
 
 import java.util.LinkedHashMap;

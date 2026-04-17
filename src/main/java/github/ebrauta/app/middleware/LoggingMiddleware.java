@@ -2,7 +2,7 @@ package github.ebrauta.app.middleware;
 
 
 import github.ebrauta.app.util.Logger;
-import github.ebrauta.core.http.IHandler;
+import github.ebrauta.core.ioc.IHandler;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
 import github.ebrauta.core.middleware.Middleware;

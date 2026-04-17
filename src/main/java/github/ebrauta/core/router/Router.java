@@ -1,7 +1,7 @@
 package github.ebrauta.core.router;
 
 import github.ebrauta.core.http.HttpMethod;
-import github.ebrauta.core.http.IHandler;
+import github.ebrauta.core.ioc.IHandler;
 import github.ebrauta.core.http.Request;
 import github.ebrauta.core.http.Response;
 

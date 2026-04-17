@@ -21,7 +21,6 @@ import java.util.List;
 public class Application {
     private final Router router = new Router();
     private final List<Middleware> middlewares = new ArrayList<>();
-    private MiddlewareChain chain;
 
     public static void run(String[] args) {
         Application app = new Application();
@@ -40,9 +39,8 @@ public class Application {
         configureCors();
     }
 
-    private Application use(Middleware middleware){
+    private void use(Middleware middleware){
         middlewares.add(middleware);
-        return this;
     }
 
     private void configureCors(){
@@ -57,10 +55,10 @@ public class Application {
 
     public void listen(int port){
         try {
-            this.chain = new MiddlewareChain(middlewares, router::handle);
+            MiddlewareChain chain = new MiddlewareChain(middlewares, router::handle);
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             HttpHandlerAdapter adapter = new HttpHandlerAdapter(chain);
-            server.createContext("/", adapter::handle);
+            server.createContext("/", adapter);
             Banner.print(port, "DEV");
             server.start();
         } catch (IOException e) {

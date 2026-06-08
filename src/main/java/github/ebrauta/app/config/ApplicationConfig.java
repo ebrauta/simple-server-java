@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ApplicationConfig {
+    private ApplicationConfig() {}
     private static final List<String> allowedMethods = new LinkedList<>();
     private static final List<String> allowedOrigins = new LinkedList<>();
 

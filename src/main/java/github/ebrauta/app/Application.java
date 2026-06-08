@@ -22,7 +22,7 @@ public class Application {
     private final Router router = new Router();
     private final List<Middleware> middlewares = new ArrayList<>();
 
-    public static void run(String[] args) {
+    public static void run() {
         Application app = new Application();
         app.configure();
         app.listen(ApplicationConfig.getPort());
@@ -62,7 +62,7 @@ public class Application {
             Banner.print(port, "DEV");
             server.start();
         } catch (IOException e) {
-            throw new RuntimeException("Falha ao iniciar o Servidor", e);
+            throw new SecurityException("Falha ao iniciar o Servidor", e);
         }
     }
 }

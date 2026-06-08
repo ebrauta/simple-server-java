@@ -1,6 +1,8 @@
 package github.ebrauta.app.util;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class JsonParser {
     private int index;
@@ -23,7 +25,7 @@ public class JsonParser {
         if (c == 't' || c == 'f') return parseBoolean();
         if (c == 'n') return parseNull();
         if (Character.isDigit(c) || c == '-') return parseNumber();
-        throw new RuntimeException("Json inválido na posição " + index);
+        throw new ArrayIndexOutOfBoundsException("Json inválido na posição " + index);
     }
     private Map<String,Object> parseObject() {
         Map<String,Object> map = new LinkedHashMap<>();
@@ -42,7 +44,6 @@ public class JsonParser {
             skipWhiteSpace();
             if(peek() == ',') {
                 consume(',');
-                continue;
             }
             if(peek() == '}') {
                 consume('}');
@@ -96,7 +97,7 @@ public class JsonParser {
     }
     private void consume(char expected) {
         if(json.charAt(index) != expected) {
-            throw new RuntimeException("Esperado '" + expected + "' na posição " + index);
+            throw new ArrayIndexOutOfBoundsException("Esperado '" + expected + "' na posição " + index);
         }
         index++;
     }
@@ -115,8 +116,8 @@ public class JsonParser {
             return "null";
         }
 
-        if (value instanceof String) {
-            return "\"" + escape((String) value) + "\"";
+        if (value instanceof String s) {
+            return "\"" + escape(s) + "\"";
         }
 
         if (value instanceof Number || value instanceof Boolean) {
@@ -127,7 +128,7 @@ public class JsonParser {
             return writeObject((Map<String, Object>) value);
         }
 
-        throw new RuntimeException("Tipo não suportado: " + value.getClass());
+        throw new TypeNotPresentException("Tipo não suportado: " + value.getClass(), null);
     }
 
     private static String writeObject(Map<String, Object> map) {

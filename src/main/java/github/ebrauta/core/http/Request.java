@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.rmi.ServerException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class Request {
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()))) {
             return reader.lines().collect(Collectors.joining(""));
         } catch (IOException e) {
-            throw new RuntimeException("Não foi possível ler o corpo da requisição: ", e);
+            throw new ServerException("Não foi possível ler o corpo da requisição: ", e);
         }
     }
 }

@@ -5,10 +5,14 @@ import java.time.format.DateTimeFormatter;
 
 public class Logger {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private static final java.util.logging.Logger logConstructor = java.util.logging.Logger.getLogger("github.ebrauta.app");
 
-    public static void log(String method, String path, int status, long duration){
+    private Logger() {
+    }
+
+    public static void log(String method, String path, int status, long duration) {
         String timestamp = LocalDateTime.now().format(FORMATTER);
         String message = String.format("[ %s ] %s %s %s (%d ms)", timestamp, method, path, status, duration);
-        System.out.println(message);
+        logConstructor.info(message);
     }
 }

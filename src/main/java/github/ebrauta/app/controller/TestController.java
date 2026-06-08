@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class TestController {
     public IHandler get() {
-        return (req) -> {
+        return req -> {
             Map<String, Object> body = new LinkedHashMap<>();
             body.put("msg", "Api funcionando");
             body.put("version", 1.0);
@@ -18,7 +18,7 @@ public class TestController {
     }
 
     public IHandler getById() {
-        return (req) -> {
+        return req -> {
             String id = req.getPathParam("id");
             int idValue = id != null ? Integer.parseInt(id) : -1;
             Map<String, Object> body = new LinkedHashMap<>();
@@ -29,7 +29,7 @@ public class TestController {
     }
 
     public IHandler getWithQuery() {
-        return (req) -> {
+        return req -> {
             String page = req.getQueryParam("page");
             String size = req.getQueryParam("size");
 

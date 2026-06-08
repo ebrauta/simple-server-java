@@ -1,8 +1,13 @@
 package github.ebrauta.app.util;
 
+import java.util.logging.Logger;
+
 public class Banner {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(Banner.class.getName());
+    private Banner() {}
     public static void print(int port, String environment){
-        System.out.printf("""
+        String bannerMsg = """
+                 \s
                  ____  _             _ _   _     _____                   \s
                 / ___|| |_ ___  __ _| | |_| |__ |  ___|__  _ __ __ _  ___\s
                 \\___ \\| __/ _ \\/ _` | | __| '_ \\| |_ / _ \\| '__/ _` |/ _ \\
@@ -16,6 +21,7 @@ public class Banner {
                        ✔ Environment: %s
                        ✔ Status: ONLINE
                
-                       %n""", port, environment);
+                       %n""".formatted(port, environment);
+        LOGGER.info(bannerMsg);
     }
 }
